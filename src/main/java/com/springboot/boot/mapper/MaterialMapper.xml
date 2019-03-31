@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springboot.boot.mapper.MaterialMapper">
+  <resultMap id="BaseResultMap" type="com.springboot.boot.pojo.Material">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="material_name" jdbcType="VARCHAR" property="materialName" />
+    <result column="material_type" jdbcType="VARCHAR" property="materialType" />
+    <result column="material_num" jdbcType="INTEGER" property="materialNum" />
+    <result column="material_price" jdbcType="DECIMAL" property="materialPrice" />
+    <result column="material_total_price" jdbcType="DECIMAL" property="materialTotalPrice" />
+    <result column="proposer" jdbcType="VARCHAR" property="proposer" />
+    <result column="proposer_no" jdbcType="INTEGER" property="proposerNo" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="approver_no" jdbcType="INTEGER" property="approverNo" />
+    <result column="approver_name" jdbcType="VARCHAR" property="approverName" />
+    <result column="approver_time" jdbcType="TIMESTAMP" property="approverTime" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="project_no" jdbcType="INTEGER" property="projectNo" />
+    <result column="project_name" jdbcType="VARCHAR" property="projectName" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, material_name, material_type, material_num, material_price, material_total_price, 
+    proposer, proposer_no, create_time, approver_no, approver_name, approver_time, status, 
+    project_no, project_name
+  </sql>
+  <select id="selectByExample" parameterType="com.springboot.boot.pojo.MaterialExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from material
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from material
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from material
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.springboot.boot.pojo.MaterialExample">
+    delete from material
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.springboot.boot.pojo.Material">
+    insert into material (id, material_name, material_type, 
+      material_num, material_price, material_total_price, 
+      proposer, proposer_no, create_time, 
+      approver_no, approver_name, approver_time, 
+      status, project_no, project_name
+      )
+    values (#{id,jdbcType=INTEGER}, #{materialName,jdbcType=VARCHAR}, #{materialType,jdbcType=VARCHAR}, 
+      #{materialNum,jdbcType=INTEGER}, #{materialPrice,jdbcType=DECIMAL}, #{materialTotalPrice,jdbcType=DECIMAL}, 
+      #{proposer,jdbcType=VARCHAR}, #{proposerNo,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{approverNo,jdbcType=INTEGER}, #{approverName,jdbcType=VARCHAR}, #{approverTime,jdbcType=TIMESTAMP}, 
+      #{status,jdbcType=INTEGER}, #{projectNo,jdbcType=INTEGER}, #{projectName,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.springboot.boot.pojo.Material">
+    insert into material
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="materialName != null">
+        material_name,
+      </if>
+      <if test="materialType != null">
+        material_type,
+      </if>
+      <if test="materialNum != null">
+        material_num,
+      </if>
+      <if test="materialPrice != null">
+        material_price,
+      </if>
+      <if test="materialTotalPrice != null">
+        material_total_price,
+      </if>
+      <if test="proposer != null">
+        proposer,
+      </if>
+      <if test="proposerNo != null">
+        proposer_no,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="approverNo != null">
+        approver_no,
+      </if>
+      <if test="approverName != null">
+        approver_name,
+      </if>
+      <if test="approverTime != null">
+        approver_time,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="projectNo != null">
+        project_no,
+      </if>
+      <if test="projectName != null">
+        project_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="materialName != null">
+        #{materialName,jdbcType=VARCHAR},
+      </if>
+      <if test="materialType != null">
+        #{materialType,jdbcType=VARCHAR},
+      </if>
+      <if test="materialNum != null">
+        #{materialNum,jdbcType=INTEGER},
+      </if>
+      <if test="materialPrice != null">
+        #{materialPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="materialTotalPrice != null">
+        #{materialTotalPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="proposer != null">
+        #{proposer,jdbcType=VARCHAR},
+      </if>
+      <if test="proposerNo != null">
+        #{proposerNo,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="approverNo != null">
+        #{approverNo,jdbcType=INTEGER},
+      </if>
+      <if test="approverName != null">
+        #{approverName,jdbcType=VARCHAR},
+      </if>
+      <if test="approverTime != null">
+        #{approverTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="projectNo != null">
+        #{projectNo,jdbcType=INTEGER},
+      </if>
+      <if test="projectName != null">
+        #{projectName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.springboot.boot.pojo.MaterialExample" resultType="java.lang.Long">
+    select count(*) from material
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update material
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.materialName != null">
+        material_name = #{record.materialName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.materialType != null">
+        material_type = #{record.materialType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.materialNum != null">
+        material_num = #{record.materialNum,jdbcType=INTEGER},
+      </if>
+      <if test="record.materialPrice != null">
+        material_price = #{record.materialPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="record.materialTotalPrice != null">
+        material_total_price = #{record.materialTotalPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="record.proposer != null">
+        proposer = #{record.proposer,jdbcType=VARCHAR},
+      </if>
+      <if test="record.proposerNo != null">
+        proposer_no = #{record.proposerNo,jdbcType=INTEGER},
+      </if>
+      <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.approverNo != null">
+        approver_no = #{record.approverNo,jdbcType=INTEGER},
+      </if>
+      <if test="record.approverName != null">
+        approver_name = #{record.approverName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.approverTime != null">
+        approver_time = #{record.approverTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.status != null">
+        status = #{record.status,jdbcType=INTEGER},
+      </if>
+      <if test="record.projectNo != null">
+        project_no = #{record.projectNo,jdbcType=INTEGER},
+      </if>
+      <if test="record.projectName != null">
+        project_name = #{record.projectName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update material
+    set id = #{record.id,jdbcType=INTEGER},
+      material_name = #{record.materialName,jdbcType=VARCHAR},
+      material_type = #{record.materialType,jdbcType=VARCHAR},
+      material_num = #{record.materialNum,jdbcType=INTEGER},
+      material_price = #{record.materialPrice,jdbcType=DECIMAL},
+      material_total_price = #{record.materialTotalPrice,jdbcType=DECIMAL},
+      proposer = #{record.proposer,jdbcType=VARCHAR},
+      proposer_no = #{record.proposerNo,jdbcType=INTEGER},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      approver_no = #{record.approverNo,jdbcType=INTEGER},
+      approver_name = #{record.approverName,jdbcType=VARCHAR},
+      approver_time = #{record.approverTime,jdbcType=TIMESTAMP},
+      status = #{record.status,jdbcType=INTEGER},
+      project_no = #{record.projectNo,jdbcType=INTEGER},
+      project_name = #{record.projectName,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.springboot.boot.pojo.Material">
+    update material
+    <set>
+      <if test="materialName != null">
+        material_name = #{materialName,jdbcType=VARCHAR},
+      </if>
+      <if test="materialType != null">
+        material_type = #{materialType,jdbcType=VARCHAR},
+      </if>
+      <if test="materialNum != null">
+        material_num = #{materialNum,jdbcType=INTEGER},
+      </if>
+      <if test="materialPrice != null">
+        material_price = #{materialPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="materialTotalPrice != null">
+        material_total_price = #{materialTotalPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="proposer != null">
+        proposer = #{proposer,jdbcType=VARCHAR},
+      </if>
+      <if test="proposerNo != null">
+        proposer_no = #{proposerNo,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="approverNo != null">
+        approver_no = #{approverNo,jdbcType=INTEGER},
+      </if>
+      <if test="approverName != null">
+        approver_name = #{approverName,jdbcType=VARCHAR},
+      </if>
+      <if test="approverTime != null">
+        approver_time = #{approverTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="projectNo != null">
+        project_no = #{projectNo,jdbcType=INTEGER},
+      </if>
+      <if test="projectName != null">
+        project_name = #{projectName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.springboot.boot.pojo.Material">
+    update material
+    set material_name = #{materialName,jdbcType=VARCHAR},
+      material_type = #{materialType,jdbcType=VARCHAR},
+      material_num = #{materialNum,jdbcType=INTEGER},
+      material_price = #{materialPrice,jdbcType=DECIMAL},
+      material_total_price = #{materialTotalPrice,jdbcType=DECIMAL},
+      proposer = #{proposer,jdbcType=VARCHAR},
+      proposer_no = #{proposerNo,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      approver_no = #{approverNo,jdbcType=INTEGER},
+      approver_name = #{approverName,jdbcType=VARCHAR},
+      approver_time = #{approverTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=INTEGER},
+      project_no = #{projectNo,jdbcType=INTEGER},
+      project_name = #{projectName,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
