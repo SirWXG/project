@@ -5,21 +5,21 @@
 <title>地名公共服务网</title>
  <meta name="keywords" content="">
 <meta name="description" content="">
-
+<script type="text/javascript" src="js/jquery.js"></script>
 <link rel="stylesheet" type="text/css"  href="../css/style.css">
  </head>
 <body>
 	<div class="ld_header">
 		<div class="ld_header_in">
 			<div class="ld_logo">
-				<a href="/"><img src="../images/ld_logo.png" alt="蒲城县地名公共服务网"></a>
+				<a href="/"><img src="images/logo.png" alt="陕建九建集团安装四公司"></a>
 			</div>
 	    </div>
 	</div>
 	<div class="ldL_con">
 		<div class="ldL_con_in">
 			<div class="ld_form">
-				<form id="login-form"  method="post" action="login_action.asp">
+				<form id="login-form"  method="post" action="/login/checkLogin">
 					<h3 class="form_title">管理员登录</h3>
 					<p>
 						<input type="text" name="userName" id="userName"/>
@@ -31,14 +31,30 @@
 					<div class="ld_login">
 						<div class="ld_login_in" id="bt-login">马上登录</div>
 						<div id="login-msg"></div>
-						 
 					</div>
-					
 				</form>
 			</div>
 		</div>
-		
 	</div>
+	<script type="text/javascript">
+		$("#bt-login").click(function () {
+			$.ajax({
+				url:"/login/checkLogin",
+				type:"post",
+				data:{
+					userName:$("input[name='userName']").val(),
+					password:$("input[name='password']").val()
+				},
+				success:function (data) {
+					if(data.code==0){
+						alert(data.msg);
+					}else{
+						window.location.href="/index";
+					}
+				}
+			});
+		});
+	</script>
 <div class="ld_footer">
     <div class="ld_footer_in">
         <p> Copyright&copy;仅做测试使用</p>

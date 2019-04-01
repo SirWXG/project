@@ -11,6 +11,10 @@ public class Project {
 
     private Double projectBalance;
 
+    private String projectPro;
+
+    private String materialManager;
+
     public Integer getId() {
         return id;
     }
@@ -41,5 +45,13 @@ public class Project {
 
     public void setProjectBalance(Double projectBalance) {
         this.projectBalance = projectBalance;
+    }
+
+    public String getMaterialManager() {
+        return materialManager;
+    }
+
+    public void setMaterialManager(String materialManager) {
+        this.materialManager = materialManager;
     }
 }
