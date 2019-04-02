@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="lib/layui/layui.js"></script>
+    <link rel="stylesheet" href="css/layui.css">
+    <script src="js/jquery.js"></script>
+</head>
+<body>
+<div>
+    <span style="font-size: 10px">选择项目:
+        <select name="projectName">
+            <option value="">请选择项目</option>
+        </select>
+    </span>
+</div>
+<br />
+<br />
+<form class="layui-form" action="">
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">材料名称</label>
+            <div class="layui-input-inline">
+                <input type="text" name="materialName" lay-verify="" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">材料数量</label>
+            <div class="layui-input-inline">
+                <input type="text" name="materialNum" lay-verify="" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">材料规格</label>
+            <div class="layui-input-inline">
+                <input type="tel" name="materialType" lay-verify="" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">材料价格</label>
+            <div class="layui-input-inline">
+                <input type="tel" name="materialPrice" lay-verify="" autocomplete="off" class="layui-input">
+                <span id="price" style="width: 400px;display: block;color: red"></span>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit="" lay-filter="demo1">提交申请</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+
+<table class="layui-hide" id="test"></table>
+
+<script th:inline="none">
+    
+    $(function () {
+        $.ajax({
+            url:"/project/selectProject",
+            type:"get",
+            success:function (data) {
+                var result = data.data;
+                $.each(result,function (index,items) {
+                    var $option = $("<option>").attr("value",items.projectName).html(items.projectName);
+                    $("select[name='projectName']").append($option);
+                })
+            }
+        });
+    })
+    
+    layui.use(['form', 'layedit', 'laydate'], function() {
+        var form = layui.form
+            , layer = layui.layer
+            , layedit = layui.layedit
+            , laydate = layui.laydate;
+        //监听提交
+        form.on('submit(demo1)', function(data){
+            layer.alert(JSON.stringify(data.field), {
+                title: '最终的提交信息'
+            })
+            return false;
+        });
+    })
+
+    $("input[name='materialName']").blur(function () {
+        $("#price").empty();
+        $("#test").empty();
+        $.ajax({
+            url:"/material/selectMaterialPrice",
+            type:"post",
+            data:{
+                materialName:$("input[name='materialName']").val()
+            },
+            success:function (data) {
+                $("#price").html("该材料参考价格为:"+data);
+            }
+        });
+        layui.use('table', function(){
+            var table = layui.table;
+            table.render({
+                elem: '#test'
+                ,url:'/material/selectMaterial?materialName='+$("input[name='materialName']").val()
+                ,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                ,cols: [[
+                    {field:'id', width:'20%', title: '编号', sort: true}
+                    ,{field:'materialName', width:'20%', title: '材料名称'}
+                    ,{field:'buyPrice', width:'20%', title: '购买价格', sort: true}
+                    ,{field:'createTime', width:'20%', title: '购买时间'}
+                    ,{field:'projectName', title: '所属项目', width: '20%', minWidth: 100} //minWidth：局部定义当前单元格的最小宽度，layui 2.2.1 新增
+                ]]
+            });
+        });
+    })
+</script>
+</body>
+</html>

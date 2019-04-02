@@ -1,30 +1,15 @@
 package com.springboot.boot.mapper;
 
 import com.springboot.boot.pojo.Material;
-import com.springboot.boot.pojo.MaterialExample;
-import java.util.List;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
+@Mapper
 public interface MaterialMapper {
-    long countByExample(MaterialExample example);
 
-    int deleteByExample(MaterialExample example);
+    String selectPrice(@Param("materialName")String materialName);
 
-    int deleteByPrimaryKey(Integer id);
-
-    int insert(Material record);
-
-    int insertSelective(Material record);
-
-    List<Material> selectByExample(MaterialExample example);
-
-    Material selectByPrimaryKey(Integer id);
-
-    int updateByExampleSelective(@Param("record") Material record, @Param("example") MaterialExample example);
-
-    int updateByExample(@Param("record") Material record, @Param("example") MaterialExample example);
-
-    int updateByPrimaryKeySelective(Material record);
-
-    int updateByPrimaryKey(Material record);
+    List<Material> selectMaterial(@Param("materialName")String materialName);
 }

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +23,7 @@ public class LoginController {
 
     @PostMapping(value = "/checkLogin")
     public SimpleResult getLogin(@RequestParam(name = "userName")String userName,
-                                 @RequestParam(name = "password")String password){
+                                 @RequestParam(name = "password")String password, HttpSession session){
         System.out.println(userName+"  "+password);
         Map<String,Object> map = new HashMap<String,Object>();
         map.put("userName",userName);
@@ -31,6 +32,7 @@ public class LoginController {
         if(list.size()<1){
             return SimpleResult.getSimple(0,"账户名或密码错误,请重新输入");
         }
+        session.setAttribute("user",list.get(0));
         return SimpleResult.getSimple(1,"");
     }
 }

@@ -34,6 +34,56 @@ public class Material {
 
     private String projectName;
 
+    private Long buyPrice;
+
+    private String materialVar;
+
+    private String materialUnit;
+
+    private String note;
+
+    private String materialSupplier;
+
+    public String getMaterialSupplier() {
+        return materialSupplier;
+    }
+
+    public void setMaterialSupplier(String materialSupplier) {
+        this.materialSupplier = materialSupplier;
+    }
+
+    public String getMaterialUnit() {
+        return materialUnit;
+    }
+
+    public void setMaterialUnit(String materialUnit) {
+        this.materialUnit = materialUnit;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    public String getMaterialVar() {
+        return materialVar;
+    }
+
+    public void setMaterialVar(String materialVar) {
+        this.materialVar = materialVar;
+    }
+
+    public Long getBuyPrice() {
+        return buyPrice;
+    }
+
+    public void setBuyPrice(Long buyPrice) {
+        this.buyPrice = buyPrice;
+    }
+
     public Integer getId() {
         return id;
     }

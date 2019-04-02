@@ -13,4 +13,13 @@
     id, project_name, create_time, project_balance,project_pro,material_manager
   </sql>
 
+  <select id="selectProject" parameterType="java.util.List" resultMap="BaseResultMap">
+    SELECT  <include refid="Base_Column_List" />
+    FROM project
+    WHERE id IN
+    <foreach collection="array" index="index" item="item"
+             open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
 </mapper>

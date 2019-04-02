@@ -1,10 +1,75 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <script src="lib/layui/layui.js"></script>
+    <link rel="stylesheet" href="css/layui.css">
 </head>
 <body>
+<table class="layui-hide" id="test" lay-filter="test"></table>
 
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">查看项目材料</a>
+</script>
+
+<script th:inline="none">
+    layui.use('table', function(){
+        var table = layui.table;
+
+        table.render({
+            elem: '#test'
+            ,url:'/project/selectProject'
+            ,toolbar: '#toolbarDemo'
+            ,title: '用户数据表'
+            ,cols: [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{field:'id', title:'编号', width:100, fixed: 'left', unresize: true, sort: true}
+                ,{field:'projectName', title:'项目名称', width:220}
+                ,{field:'createTime', title:'项目创建时间', width:280, sort: true}
+                ,{field:'projectBalance', title:'项目预算', width:200, edit: 'text'}
+                ,{field:'projectPro', title:'项目负责人',width:200}
+                ,{field:'materialManager', title:'材料主管', width:280, sort: true}
+                ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
+            ]]
+            ,page: true
+        });
+
+        table.on('edit(test)', function(obj){
+            var value = obj.value //得到修改后的值
+                ,data = obj.data //得到所在行所有键值
+                ,field = obj.field; //得到字段
+            $.ajax({
+                url:"/project/updateProject",
+                type:"post",
+                data:{
+                    id:data.id,
+                    balance:value
+                },
+                success:function (data) {
+                    if(data.code==0){
+                        layer.msg('[项目名称: '+ data.projectName +'] ' + title + ' 更改为：'+ value);
+                    }else{
+                        layer.msg('更改失败');
+                    }
+                }
+            });
+        });
+
+        //监听行工具事件
+        table.on('tool(test)', function(obj){
+            var data = obj.data;
+            //console.log(obj)
+            if(obj.event === 'del'){
+                layer.confirm('真的删除行么', function(index){
+                    obj.del();
+                    layer.close(index);
+                });
+            } else if(obj.event === 'edit'){
+
+            }
+        });
+    });
+</script>
 </body>
 </html>

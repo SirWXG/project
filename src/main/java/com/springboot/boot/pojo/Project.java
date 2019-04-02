@@ -47,6 +47,14 @@ public class Project {
         this.projectBalance = projectBalance;
     }
 
+    public String getProjectPro() {
+        return projectPro;
+    }
+
+    public void setProjectPro(String projectPro) {
+        this.projectPro = projectPro;
+    }
+
     public String getMaterialManager() {
         return materialManager;
     }
