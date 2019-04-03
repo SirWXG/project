@@ -49,11 +49,11 @@
     </div>
     <div class="layui-form-item">
         <div class="layui-inline">
-        <label class="layui-form-label">材料单位</label>
-        <div class="layui-input-inline">
-            <input type="text" name="materialUnit" lay-verify="" autocomplete="off" class="layui-input">
+            <label class="layui-form-label">材料单位</label>
+            <div class="layui-input-inline">
+                <input type="text" name="materialUnit" lay-verify="" autocomplete="off" class="layui-input">
+            </div>
         </div>
-    </div>
         <div class="layui-inline">
             <label class="layui-form-label">材料供应商</label>
             <div class="layui-input-inline">
@@ -80,7 +80,7 @@
 <table class="layui-hide" id="test"></table>
 
 <script th:inline="none">
-    
+
     $(function () {
         $.ajax({
             url:"/project/selectProject",
@@ -148,7 +148,7 @@
                 materialSupplier:$("input[name='materialSupplier']").val(),
                 note:$("textarea[name='note']").val(),
                 materialUnit:$("input[name='materialUnit']").val(),
-                materialVar:'工程材料'
+                materialVar:'临时材料'
             },
             success:function (data) {
                 if(data.code==1){
@@ -159,7 +159,7 @@
             }
         });
     });
-    
+
     layui.use(['form', 'layedit', 'laydate'], function() {
         var form = layui.form
             , layer = layui.layer;

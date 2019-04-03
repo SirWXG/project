@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../css/bootstrap.css">
+</head>
+<body>
+<table class="table table-striped">
+    <tr>
+        <th>编号</th>
+        <th>材料名称</th>
+        <th>材料购买价格</th>
+        <th>材料数量</th>
+        <th>材料规格</th>
+        <th>材料类型</th>
+        <th>材料供应商</th>
+        <th>备注</th>
+        <th>合计</th>
+    </tr>
+    <tbody id="tbodys">
+        <tr th:each="mater:${material}">
+            <td th:text="${mater.id}"></td>
+            <td th:text="${mater.materialName}"></td>
+            <td th:text="${mater.buyPrice}"></td>
+            <td th:text="${mater.materialNum}"></td>
+            <td th:text="${mater.materialType}"></td>
+            <td th:text="${mater.materialVar}"></td>
+            <td th:text="${mater.materialSupplier}"></td>
+            <td th:text="${mater.note}"></td>
+            <td th:text="${mater.buyPrice*mater.materialNum}"></td>
+        </tr>
+    </tbody>
+</table>
+</body>
+</html>

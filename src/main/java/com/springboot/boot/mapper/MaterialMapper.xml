@@ -37,4 +37,20 @@
     SELECT <include refid="Base_Column_List" />
     FROM material where material_name=#{materialName}
   </select>
+
+  <select id="selectMaterialByProject" parameterType="string" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List" />
+    from material where project_name=#{projectNo}
+  </select>
+
+  <insert id="addMaterial" parameterType="com.springboot.boot.pojo.Material">
+    INSERT INTO material(material_name,material_type,material_num,material_unit,note,material_supplier,buy_price,proposer,proposer_no,create_time,status,project_name,material_var)
+    values (#{materialName},#{materialType},#{materialNum},#{materialUnit},#{note},#{materialSupplier},#{buyPrice},#{proposer},#{proposerNo},#{createTime},#{status},#{projectName},#{materialVar})
+  </insert>
+
+  <select id="selectMaterialByStatus" parameterType="int" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List" />
+    from material where status=#{status}
+  </select>
+
 </mapper>
