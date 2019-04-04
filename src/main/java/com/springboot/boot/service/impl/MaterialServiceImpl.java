@@ -59,4 +59,14 @@ public class MaterialServiceImpl implements MaterialService {
         }
         return materialMapper.selectMaterialByStatus(status);
     }
+
+    @Override
+    public int updateMaterial(Material material) {
+        HttpSession session=((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getSession();
+        User user = (User)session.getAttribute("user");
+        material.setApproverTime(new Date());
+        material.setApproverNo(user.getId());
+        material.setApproverName(user.getUserName());
+        return materialMapper.updateMaterial(material);
+    }
 }

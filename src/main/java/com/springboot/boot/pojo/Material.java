@@ -44,6 +44,16 @@ public class Material {
 
     private String materialSupplier;
 
+    private String isFailer;
+
+    public String getIsFailer() {
+        return isFailer;
+    }
+
+    public void setIsFailer(String isFailer) {
+        this.isFailer = isFailer;
+    }
+
     public String getMaterialSupplier() {
         return materialSupplier;
     }

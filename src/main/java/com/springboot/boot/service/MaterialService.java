@@ -15,4 +15,6 @@ public interface MaterialService {
     int addMaterial(Material material);
 
     List<Material> selectMaterialByStatus();
+
+    int updateMaterial(Material material);
 }

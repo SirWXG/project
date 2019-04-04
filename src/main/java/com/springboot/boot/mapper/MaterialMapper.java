@@ -18,4 +18,6 @@ public interface MaterialMapper {
     int addMaterial(Material material);
 
     List<Material> selectMaterialByStatus(@Param("status")Integer status);
+
+    int updateMaterial(Material material);
 }

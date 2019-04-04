@@ -22,11 +22,12 @@
     <result column="material_unit" jdbcType="VARCHAR" property="materialUnit" />
     <result column="note" jdbcType="VARCHAR" property="note" />
     <result column="material_supplier" jdbcType="VARCHAR" property="materialSupplier" />
+    <result column="is_failer" jdbcType="VARCHAR" property="isFailer" />
   </resultMap>
   <sql id="Base_Column_List">
     id, material_name, material_type, material_num, material_price, material_total_price, 
     proposer, proposer_no, create_time, approver_no, approver_name, approver_time, status, 
-    project_no, project_name,buy_price,material_var,material_unit,note,material_supplier
+    project_no, project_name,buy_price,material_var,material_unit,note,material_supplier,is_failer
   </sql>
 
   <select id="selectPrice" parameterType="string" resultType="string">
@@ -53,4 +54,8 @@
     from material where status=#{status}
   </select>
 
+  <update id="updateMaterial" parameterType="com.springboot.boot.pojo.Material">
+    UPDATE material set is_failer=#{isFailer},approver_no=#{approverNo},approver_name=#{approverName},approver_time=#{approverTime},status=#{status}
+    where id=#{id}
+  </update>
 </mapper>

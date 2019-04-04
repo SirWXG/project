@@ -62,4 +62,24 @@ public class MaterialController {
         result.setData(lists);
         return result;
     }
+
+    @RequestMapping(value = "/updateMaterial",method = RequestMethod.POST)
+    @ResponseBody
+    public SimpleResult updateMaterial(@RequestParam(name = "materialId")Integer materialId,
+                                       @RequestParam(name = "isFailer",defaultValue = "")String isFailer,
+                                       @RequestParam(name = "status")Integer status){
+        SimpleResult result = new SimpleResult();
+        Material material = new Material();
+        material.setId(materialId);
+        material.setIsFailer(isFailer);
+        material.setStatus(status);
+        int flag = materialService.updateMaterial(material);
+        if(flag<1){
+            result.setCode(0);
+            result.setMsg("审批失败,请重新审批");
+        }else{
+            result.setCode(1);
+        }
+        return  result;
+    }
 }
