@@ -20,16 +20,17 @@
         table.render({
             elem: '#test'
             ,url:'/project/selectProject'
-            ,toolbar: '#toolbarDemo'
+            ,totalRow: true //开启合计行
+            ,toolbar: 'default'
             ,title: '用户数据表'
             ,cols: [[
                 {type: 'checkbox', fixed: 'left'}
                 ,{field:'id', title:'编号', width:'14%', fixed: 'left', unresize: true, sort: true}
                 ,{field:'projectName', title:'项目名称', width:'14%'}
-                ,{field:'createTime', title:'项目创建时间', width:'14%', sort: true}
-                ,{field:'projectBalance', title:'项目预算', width:'14%', edit: 'text'}
+                ,{field:'projectBalance', title:'材料预算合计', width:'14%', edit: 'text'}
                 ,{field:'projectPro', title:'项目负责人',width:'14%'}
                 ,{field:'materialManager', title:'材料主管', width:'14%', sort: true}
+                ,{field:'createTime', title:'项目创建时间', width:'14%', sort: true}
                 ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:'14%'}
             ]]
             ,page: true
