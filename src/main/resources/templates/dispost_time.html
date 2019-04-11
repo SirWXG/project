@@ -8,15 +8,6 @@
     <script src="js/jquery.js"></script>
 </head>
 <body>
-<div>
-    <span style="font-size: 10px">选择项目:
-        <select name="projectName">
-            <option value="">请选择项目</option>
-        </select>
-    </span>
-</div>
-<br />
-<br />
 <form class="layui-form" action="">
     <div class="layui-form-item">
         <div class="layui-inline">
@@ -81,26 +72,7 @@
 
 <script th:inline="none">
 
-    $(function () {
-        $.ajax({
-            url:"/project/selectProject",
-            type:"get",
-            success:function (data) {
-                var result = data.data;
-                $.each(result,function (index,items) {
-                    var $option = $("<option>").attr("value",items.projectName).html(items.projectName);
-                    $("select[name='projectName']").append($option);
-                })
-            }
-        });
-    })
-
     $(".layui-btn").click(function () {
-        var projectName = $("select[name='projectName']").val();
-        if(projectName.trim().length<1){
-            layer.alert("未选择项目名");
-            return false;
-        }
         var materialName = $("input[name='materialName']").val();
         if(materialName.trim().length<1){
             layer.alert("材料名称不能为空");
@@ -140,7 +112,6 @@
             url:"/material/addMaterial",
             type:"post",
             data:{
-                projectName:$("select[name='projectName']").val(),
                 materialName:$("input[name='materialName']").val(),
                 materialNum:$("input[name='materialNum']").val(),
                 materialType:$("input[name='materialType']").val(),

@@ -23,9 +23,9 @@
             ,toolbar: '#toolbarDemo'
             ,cols: [[
                 {field:'id', title:'编号', width:'10%', fixed: 'left', unresize: true, sort: true}
-                ,{field:'materialName', title:'材料名称', width:'10%', edit: 'text'}
-                ,{field:'buyPrice', title:'购买价格', width:'10%', edit: 'text', sort: true}
-                ,{field:'materialNum', title:'数量', width:'10%'}
+                ,{field:'materialName', title:'材料名称', width:'10%'}
+                ,{field:'buyPrice', title:'购买价格', width:'10%', sort: true}
+                ,{field:'materialNum', title:'数量(可修改)', width:'10%',edit: 'text'}
                 ,{field:'materialSupplier', title:'供应商',width:'10%'}
                 ,{field:'materialVar', title:'材料类型', width:'10%', sort: true}
                 ,{field:'createTime', title:'申请时间', width:'10%'}
@@ -35,6 +35,26 @@
             ]]
             ,page: true
         });
+
+        //监听单元格编辑
+        table.on('edit(test)', function(obj){
+            var value = obj.value //得到修改后的值
+                ,data = obj.data //得到所在行所有键值
+            $.ajax({
+                url:"/material/updateMaterialNum",
+                type:"post",
+                data:{
+                    id:data.id,
+                    materialNum:value
+                },
+                success:function (datas) {
+                    if(datas.code==1){
+                        layer.msg('[项目: '+ data.projectName +']  的数量更改为：'+ value);
+                    }
+                }
+            });
+        });
+
         //监听行工具事件
         table.on('tool(test)', function(obj){
             var data = obj.data;

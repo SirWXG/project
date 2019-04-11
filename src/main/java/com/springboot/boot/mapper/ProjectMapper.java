@@ -9,4 +9,6 @@ import java.util.List;
 public interface ProjectMapper {
 
     List<Project> selectProject(String array[]);
+
+    int addProject(Project project);
 }

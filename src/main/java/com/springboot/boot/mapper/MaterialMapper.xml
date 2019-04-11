@@ -39,9 +39,15 @@
     FROM material where material_name=#{materialName}
   </select>
 
-  <select id="selectMaterialByProject" parameterType="string" resultMap="BaseResultMap">
+  <select id="selectMaterialByProject" parameterType="map" resultMap="BaseResultMap">
     SELECT <include refid="Base_Column_List" />
-    from material where project_name=#{projectNo}
+    from material
+    <where>
+      project_name=#{projectName}
+      <if test="materialVar!=null and materialVar.trim()!=''">
+       and material_var=#{materialVar}
+      </if>
+    </where>
   </select>
 
   <insert id="addMaterial" parameterType="com.springboot.boot.pojo.Material">
@@ -58,4 +64,10 @@
     UPDATE material set is_failer=#{isFailer},approver_no=#{approverNo},approver_name=#{approverName},approver_time=#{approverTime},status=#{status}
     where id=#{id}
   </update>
+
+  <update id="updateMaterialNum" parameterType="com.springboot.boot.pojo.Material">
+    UPDATE material set material_num=#{materialNum}
+    where id=#{id}
+  </update>
+
 </mapper>

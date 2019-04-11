@@ -1,5 +1,8 @@
 package com.springboot.boot.pojo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -20,12 +23,16 @@ public class Material {
 
     private Integer proposerNo;
 
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date createTime;
 
     private Integer approverNo;
 
     private String approverName;
 
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date approverTime;
 
     private Integer status;

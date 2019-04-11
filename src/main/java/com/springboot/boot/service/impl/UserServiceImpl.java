@@ -19,4 +19,24 @@ public class UserServiceImpl implements UserService {
     public List<User> checkLogin(Map<String, Object> map) {
         return userMapper.checkLogin(map);
     }
+
+    @Override
+    public List<User> selectUser(String userName) {
+        return userMapper.selectUser(userName);
+    }
+
+    @Override
+    public List<User> selectMaterialManger() {
+        return userMapper.selectMaterialManger();
+    }
+
+    @Override
+    public int updateProjectList(Map<String, Object> map) {
+        return userMapper.updateProjectList(map);
+    }
+
+    @Override
+    public int updateManagerList(String projectList) {
+        return userMapper.updateManagerList(projectList);
+    }
 }

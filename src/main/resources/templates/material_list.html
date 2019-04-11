@@ -3,12 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link rel="stylesheet" href="../css/bootstrap.css">
-    <script src="../js/jquery.js"></script>
+    <script src="lib/layui/layui.js"></script>
+    <link rel="stylesheet" href="css/layui.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="../css/font.css">
+    <link rel="stylesheet" href="../css/xadmin.css">
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/xadmin.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
 </head>
 <body>
     <input type="text" name="xlsName" value="导出文件名" />
-    <input type="submit" id="submit" value="导出"/>
+    <input type="submit" id="submit" value="打印当前页"/>
+    <input type="submit" id="submits" value="打印全部">
 <script>
     $(function () {
         $("#submit").click(function () {
@@ -24,34 +36,147 @@
                 }
             });
         });
+        $("#submits").click(function () {
+            $.ajax({
+                url:"/file/uploads",
+                type:"post",
+                data:{
+                    xlsName:$("input[name='xlsName']").val()
+                },
+                success:function (data) {
+                    alert("导入成功");
+                }
+            });
+        });
         return false;
     });
 </script>
-<table class="table table-striped">
-    <tr>
-        <th>编号</th>
-        <th>材料名称</th>
-        <th>材料购买价格</th>
-        <th>材料数量</th>
-        <th>材料规格</th>
-        <th>材料类型</th>
-        <th>材料供应商</th>
-        <th>备注</th>
-        <th>合计</th>
-    </tr>
-    <tbody id="tbodys">
-        <tr th:each="mater:${material}">
-            <td th:text="${mater.id}"></td>
-            <td th:text="${mater.materialName}"></td>
-            <td th:text="${mater.buyPrice}"></td>
-            <td th:text="${mater.materialNum}"></td>
-            <td th:text="${mater.materialType}"></td>
-            <td th:text="${mater.materialVar}"></td>
-            <td th:text="${mater.materialSupplier}"></td>
-            <td th:text="${mater.note}"></td>
-            <td th:text="${mater.buyPrice*mater.materialNum}"></td>
-        </tr>
-    </tbody>
-</table>
+    <div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a href="">首页</a>
+        <a href="">演示</a>
+        <a>
+          <cite>导航元素</cite></a>
+      </span>
+        <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+            <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+    </div>
+    <div class="x-body">
+        <div class="layui-row">
+            <form class="layui-form layui-col-md12 x-so">
+                <div class="layui-input-inline">
+                    <select name="projectVar">
+                        <option value="">请选择材料类型</option>
+                        <option value="临时材料">临时材料</option>
+                        <option value="工程材料">工程材料</option>
+                    </select>
+                </div>
+                <button class="layui-btn" id="query"  lay-submit="" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>
+            </form>
+        </div>
+        <xblock>
+             <span class="x-right" style="line-height:40px"></span>
+        </xblock>
+        <table class="layui-table layui-form table">
+            <thead>
+            <tr>
+                <th>编号</th>
+                <th>材料名称</th>
+                <th>材料规格</th>
+                <th>材料单位</th>
+                <th>材料数量</th>
+                <th>材料购买价</th>
+                <th>合计</th>
+                <th>材料类型</th>
+                <th>供应商</th>
+                <th>备注</th>
+            </tr>
+            </thead>
+            <tbody id="tbodys">
+
+            </tbody>
+        </table>
+        <div class="page">
+        </div>
+    </div>
+    <script>
+        $(function () {
+            getAjax(1);
+            $("#query").click(function () {
+                getAjax(1);
+                return false;
+            });
+        })
+
+        function getAjax(data) {
+            $.ajax({
+                url:"/material/selectMaterialByProject",
+                type:"get",
+                data:{
+                    page:data,
+                    projectVar:$("select[name='projectVar']").val()
+                },
+                success:function (data) {
+                    eachData(data,data.list);
+                    eachPage(data);
+                }
+            });
+            return false;
+        }
+
+        function eachPage(data) {
+            $("#divPage").empty();
+            $(".page").empty();
+
+            var $prev = $("<a>").addClass("prev").attr("href","javascript:getAjax("+(data.isFirstPage?1:data.prePage)+")").html("&lt;&lt;");
+            var $next = $("<a>").addClass("next").attr("href","javascript:getAjax("+(data.isLastPage?data.pages:data.nextPage)+")").html("&gt;&gt;");
+            var $divc = $("<div>").append($prev);
+            $.each(data.navigatepageNums,function (index,items) {
+                if (items==data.pageNum){
+                    var $spans = $("<span>").addClass("current").html(items);
+                    $divc.append($spans);
+                }else{
+                    var $as = $("<a>").addClass("num").attr("href","javascript:getAjax("+items+")").html(items);
+                    $divc.append($as)
+                }
+            })
+            $divc.append($next);
+            $(".page").append($divc);
+        }
+
+        function eachData(data,result) {
+            $("#tbodys").empty();
+            var time_price = 0.00;
+            var project_price=0.00;
+            $.each(result,function (index,items) {
+                <!-- 遍历数据 -->
+                var $materialId = $("<td>").attr("style","width:10%").html(items.id);
+                var $materialName = $("<td>").attr("style","width:10%").html(items.materialName);
+                var $buyPrice = $("<td>").attr("style","width:10%").html(items.buyPrice);
+                var $materialNum = $("<td>").attr("style","width:10%").html(items.materialNum);
+                var $materialUnit = $("<td>").attr("style","width:10%").html(items.materialUnit);
+                var $materialType = $("<td>").attr("style","width:10%").html(items.materialType);
+                var $materialVar = $("<td>").attr("style","width:10%").html(items.materialVar);
+                var $materialSupplier = $("<td>").attr("style","width:10%").html(items.materialSupplier);
+                var $note = $("<td>").attr("style","width:10%").html(items.note);
+                var $add = $("<td>").attr("style","width:10%").html(items.materialNum*items.buyPrice);
+                if(items.materialVar=='临时材料'){
+                    time_price=time_price+items.materialNum*items.buyPrice;
+                }else{
+                    project_price=project_price+items.materialNum*items.buyPrice;
+                }
+                var $tr = $("<tr>").append($materialId).append($materialName)
+                    .append($materialType).append($materialUnit).append($materialNum).append($buyPrice).append($add)
+                    .append($materialVar).append($materialSupplier).append($note);
+                $("#tbodys").append($tr);
+            })
+            $(".x-right").empty();
+            var html = "当前共有:"+data.total+"条数据"+",临时材料总价为:"+time_price+",工程材料总价为:"+project_price;
+            $(".x-right").html(html);
+        }
+        layui.use(['form'], function(){
+            form = layui.form;
+        });
+    </script>
 </body>
 </html>

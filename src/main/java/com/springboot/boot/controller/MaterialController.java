@@ -1,14 +1,18 @@
 package com.springboot.boot.controller;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.springboot.boot.pojo.Material;
 import com.springboot.boot.service.MaterialService;
 import com.springboot.boot.utils.SimpleResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping(value = "/material")
@@ -37,15 +41,24 @@ public class MaterialController {
     }
 
     @RequestMapping(value = "/selectMaterialByProject",method = RequestMethod.GET)
-    public String selectMaterialByProject(@RequestParam(name = "projectId")String projectId, Model model){
-        List<Material> list =  materialService.selectMaterialByProject(projectId);
-        model.addAttribute("material",list);
-        return "material_list";
+    @ResponseBody
+    public PageInfo<Material> selectMaterialByProject(@RequestParam(name = "page",defaultValue = "1")Integer page,
+            @RequestParam(name = "projectVar",defaultValue = "")String projectVar,HttpSession session){
+        String id = (String) session.getAttribute("projectId");
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("materialVar",projectVar);
+        map.put("projectName",id);
+        PageHelper.startPage(page,10);
+        List<Material> list =  materialService.selectMaterialByProject(map);
+        PageInfo<Material> info = new PageInfo<>(list,4);
+        return info;
     }
 
     @RequestMapping(value = "/addMaterial",method = RequestMethod.POST)
     @ResponseBody
-    public SimpleResult addMaterial(Material material){
+    public SimpleResult addMaterial(Material material,HttpSession session){
+        String projectName= (String)session.getAttribute("projectName");
+        material.setProjectName(projectName);
         int flag = materialService.addMaterial(material);
         return SimpleResult.getSimple(flag<1?0:1,flag<1?"申请失败":"申请成功");
     }
@@ -81,5 +94,25 @@ public class MaterialController {
             result.setCode(1);
         }
         return  result;
+    }
+
+    @RequestMapping(value = "/setSession",method = RequestMethod.POST)
+    @ResponseBody
+    public String setSession(@RequestParam(name = "id")String id, HttpSession session){
+        session.setAttribute("projectId",id);
+        return "";
+    }
+
+    @RequestMapping(value = "/updateMaterialNum",method = RequestMethod.POST)
+    @ResponseBody
+    public SimpleResult updateMaterialNum(Material material){
+        SimpleResult result = new SimpleResult();
+        int flag = materialService.updateMaterialNum(material);
+        if(flag<1){
+            result.setMsg("修改失败");
+        }else{
+            result.setCode(1);
+        }
+        return result;
     }
 }

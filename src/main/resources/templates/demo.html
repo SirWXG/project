@@ -29,7 +29,9 @@
 					<p>
 						<input type="password" id="password" name="password" class="ld_pass"/>
 					</p>
-					
+					<p id="selectProject">
+
+					</p>
 					<div class="ld_login">
 						<div class="ld_login_in" id="bt-login">马上登录</div>
 						<div id="login-msg"></div>
@@ -39,13 +41,41 @@
 		</div>
 	</div>
 	<script type="text/javascript">
+		$("input[name='userName']").blur(function () {
+			$.ajax({
+				url:"/project/selectProjectByUser",
+				type:"post",
+				data:{
+					userName:$("input[name='userName']").val()
+				},
+				success:function (data) {
+				    if(data.code==1){
+				        $("select[name='projectName']").remove();
+                    }else{
+                        $("select[name='projectName']").remove();
+                        var result = data.data;
+                        var $res = $("<select>").attr("name","projectName");
+                        var $options = $("<option>").attr("value","").html("请选择项目");
+                        $res.append($options);
+                        $.each(result,function (index,items) {
+                            var $option =$("<option>").attr("value",items.projectName).html(items.projectName);
+                            $res.append($option);
+                        })
+                        $("#selectProject").append($res);
+                    }
+				}
+			});
+			return false;
+		});
+
 		$("#bt-login").click(function () {
 			$.ajax({
 				url:"/login/checkLogin",
 				type:"post",
 				data:{
 					userName:$("input[name='userName']").val(),
-					password:$("input[name='password']").val()
+					password:$("input[name='password']").val(),
+                    projectName:$("select[name='projectName']").val()
 				},
 				success:function (data) {
 					if(data.code==0){
@@ -60,7 +90,6 @@
 <div class="ld_footer">
     <div class="ld_footer_in">
         <p> Copyright&copy;仅做测试使用</p>
-        <p>/</p>
     </div>
 </div>
  </body>

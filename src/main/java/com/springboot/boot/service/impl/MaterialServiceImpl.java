@@ -12,6 +12,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpSession;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class MaterialServiceImpl implements MaterialService {
@@ -30,8 +31,8 @@ public class MaterialServiceImpl implements MaterialService {
     }
 
     @Override
-    public List<Material> selectMaterialByProject(String projectNo) {
-        return materialMapper.selectMaterialByProject(projectNo);
+    public List<Material> selectMaterialByProject(Map<String,Object> map) {
+        return materialMapper.selectMaterialByProject(map);
     }
 
     @Override
@@ -68,5 +69,10 @@ public class MaterialServiceImpl implements MaterialService {
         material.setApproverNo(user.getId());
         material.setApproverName(user.getUserName());
         return materialMapper.updateMaterial(material);
+    }
+
+    @Override
+    public int updateMaterialNum(Material material) {
+        return materialMapper.updateMaterialNum(material);
     }
 }

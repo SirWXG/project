@@ -18,5 +18,22 @@
     SELECT <include refid="Base_list_sql" />
     FROM user where user_name=#{userName} and user_pass=#{userPass}
   </select>
+  <select id="selectUser" parameterType="string" resultMap="BaseResultMap">
+    SELECT <include refid="Base_list_sql" />
+    FROM user where user_name=#{userName}
+  </select>
 
+  <select id="selectMaterialManger" resultMap="BaseResultMap">
+    SELECT <include refid="Base_list_sql" /> from user where roler_name='材料主管'
+  </select>
+
+  <update id="updateProjectList" parameterType="map">
+    UPDATE user set project_list=#{projectList}
+    where user_name=#{userName}
+  </update>
+
+  <update id="updateManagerList" parameterType="string">
+    UPDATE user set project_list=#{projectList}
+    where roler_name in ('材料主管','经理')
+  </update>
 </mapper>

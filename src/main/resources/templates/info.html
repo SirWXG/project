@@ -5,72 +5,183 @@
     <title>Title</title>
     <script src="lib/layui/layui.js"></script>
     <link rel="stylesheet" href="css/layui.css">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="../css/font.css">
+    <link rel="stylesheet" href="../css/xadmin.css">
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="../js/xadmin.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
 </head>
 <body>
-<table class="layui-hide" id="test" lay-filter="test"></table>
+<div class="x-nav">
+      <span class="layui-breadcrumb">
+        <a href="">首页</a>
+        <a href="">演示</a>
+        <a>
+          <cite>导航元素</cite></a>
+      </span>
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:30px">ဂ</i></a>
+</div>
+<div class="x-body">
+    <div class="layui-row" th:if="${session.user.rolerName=='材料主管'||session.user.rolerName=='经理'}">
+        <form class="layui-form" action="">
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">项目名</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="projectName" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <button class="layui-btn">添加项目</button>
+            </div>
+        </div>
+        </form>
+    </div>
+    <xblock>
+        <span class="x-right" style="line-height:40px"></span>
+    </xblock>
+    <table class="layui-table layui-form">
+        <thead>
+        <tr>
+            <th>项目编号</th>
+            <th>项目名称</th>
+            <th>项目材料合计</th>
+            <th>项目创建人</th>
+            <th>材料主管</th>
+            <th>创建时间</th>
+            <th width="50">操作</th>
+        </thead>
+        <tbody id="tbodys">
 
-<script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-xs" lay-event="edit">查看项目材料</a>
-</script>
-
-<script th:inline="none">
-    layui.use('table', function(){
-        var table = layui.table;
-
-        table.render({
-            elem: '#test'
-            ,url:'/project/selectProject'
-            ,totalRow: true //开启合计行
-            ,toolbar: 'default'
-            ,title: '用户数据表'
-            ,cols: [[
-                {type: 'checkbox', fixed: 'left'}
-                ,{field:'id', title:'编号', width:'14%', fixed: 'left', unresize: true, sort: true}
-                ,{field:'projectName', title:'项目名称', width:'14%'}
-                ,{field:'projectBalance', title:'材料预算合计', width:'14%', edit: 'text'}
-                ,{field:'projectPro', title:'项目负责人',width:'14%'}
-                ,{field:'materialManager', title:'材料主管', width:'14%', sort: true}
-                ,{field:'createTime', title:'项目创建时间', width:'14%', sort: true}
-                ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:'14%'}
-            ]]
-            ,page: true
+        </tbody>
+    </table>
+    <div class="page">
+    </div>
+</div>
+<script>
+    $(function () {
+        getAjax(1);
+        $("#query").click(function () {
+            getAjax(1);
+            return false;
         });
+    })
 
-        table.on('edit(test)', function(obj){
-            var value = obj.value //得到修改后的值
-                ,data = obj.data //得到所在行所有键值
-                ,field = obj.field; //得到字段
-            $.ajax({
-                url:"/project/updateProject",
-                type:"post",
-                data:{
-                    id:data.id,
-                    balance:value
-                },
-                success:function (data) {
-                    if(data.code==0){
-                        layer.msg('[项目名称: '+ data.projectName +'] ' + title + ' 更改为：'+ value);
-                    }else{
-                        layer.msg('更改失败');
-                    }
-                }
-            });
-        });
-
-        //监听行工具事件
-        table.on('tool(test)', function(obj){
-            var data = obj.data;
-            //console.log(obj)
-            if(obj.event === 'del'){
-                layer.confirm('真的删除行么', function(index){
-                    obj.del();
-                    layer.close(index);
-                });
-            } else if(obj.event === 'edit'){
-                window.location.href="/material/selectMaterialByProject?projectId="+data.projectName;
+    function getAjax(data) {
+        $.ajax({
+            url:"/project/selectProject",
+            type:"get",
+            data:{
+                page:data,
+                productName:$("input[name='productName']").val()
+            },
+            success:function (data) {
+                eachData(data.list);
+                eachPage(data);
+                $(".x-right").html("共有数据："+data.total+"条");
             }
         });
+        return false;
+    }
+
+    function eachPage(data) {
+        $("#divPage").empty();
+        $(".page").empty();
+        var $prev = $("<a>").addClass("prev").attr("href","javascript:getAjax("+(data.isFirstPage?1:data.prePage)+")").html("&lt;&lt;");
+        var $next = $("<a>").addClass("next").attr("href","javascript:getAjax("+(data.isLastPage?data.pages:data.nextPage)+")").html("&gt;&gt;");
+        var $divc = $("<div>").append($prev);
+        $.each(data.navigatepageNums,function (index,items) {
+            if (items==data.pageNum){
+                var $spans = $("<span>").addClass("current").html(items);
+                $divc.append($spans);
+            }else{
+                var $as = $("<a>").addClass("num").attr("href","javascript:getAjax("+items+")").html(items);
+                $divc.append($as)
+            }
+        })
+        $divc.append($next);
+        $(".page").append($divc);
+    }
+
+    function eachData(result) {
+        $("#tbodys").empty();
+        $.each(result,function (index,items) {
+            <!-- 遍历数据 -->
+            var $projectNo = $("<td>").attr("style","width:14%").html(items.id);
+            var $projectName = $("<td>").attr("style","width:14%").html(items.projectName);
+            var $projectBalance = $("<td>").attr("style","width:14%").html(items.projectBalance);
+            var $projectPro = $("<td>").attr("style","width:14%").html(items.projectPro);
+            var $materialManager = $("<td>").attr("style","width:14%").html(items.materialManager);
+            var $createTime = $("<td>").attr("style","width:14%").html(items.createTime);
+            <!--操作栏-->
+            var $a2 = $("<a>").attr("title","编辑").attr("onclick","member_getNo('"+items.projectName+"')").attr("href","javascript:;");
+            var $i2 = $("<i>").addClass("layui-icon").html("查看项目材料");
+            var $td_manage = $("<td>").addClass("td-manage").append($a2.append($i2));
+            var $tr = $("<tr>").append($projectNo).append($projectName).
+            append($projectBalance).append($projectPro).
+            append($materialManager).append($createTime).append($td_manage);
+            $("#tbodys").append($tr);
+        })
+    }
+    layui.use(['form'], function(){
+        form = layui.form;
     });
+    function member_getNo(id){
+        $.ajax({
+            url:"/material/setSession",
+            type:"post",
+            data:{
+                id:id
+            },
+            success:function () {
+                window.location.href="/material_list"
+            }
+        })
+    }
+
+    $(".layui-btn").click(function upt() {
+        var projectName = $("input[name='projectName']").val();
+        if(projectName.trim().length<1){
+            alert("项目名不能为空");
+            return false;
+        }
+        $.ajax({
+            url:"/project/addProject",
+            method:"post",
+            data:{
+                projectName:projectName
+            },
+            success:function (data) {
+                if(data.code==1){
+                    $.ajax({
+                       url:"/project/selectProject",
+                       type:"get",
+                       data:{
+                           page:$(".current").html()
+                       },
+                       success:function (data) {
+                           eachData(data.list);
+                           eachPage(data);
+                           $(".x-right").html("共有数据："+data.total+"条");
+                           $("input[name='projectName']").empty();
+                       }
+                    });
+                    return false;
+                }else{
+                    alert(data.msg);
+                }
+            }
+        })
+        return false;
+    });
+
 </script>
 </body>
 </html>

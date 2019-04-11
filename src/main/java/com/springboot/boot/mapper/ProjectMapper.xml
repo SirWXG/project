@@ -22,4 +22,12 @@
       #{item}
     </foreach>
   </select>
+
+  <insert id="addProject" parameterType="com.springboot.boot.pojo.Project" keyProperty="id">
+    <selectKey keyProperty="id" resultType="int" order="AFTER">
+      SELECT LAST_INSERT_ID();
+    </selectKey>
+    INSERT INTO project(project_name,create_time,project_balance,project_pro,material_manager)
+    values (#{projectName},#{createTime},#{projectBalance},#{projectPro},#{materialManager})
+  </insert>
 </mapper>
