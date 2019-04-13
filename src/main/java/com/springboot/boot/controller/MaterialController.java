@@ -3,6 +3,8 @@ package com.springboot.boot.controller;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.springboot.boot.pojo.Material;
+import com.springboot.boot.pojo.User;
+import com.springboot.boot.service.InventoryService;
 import com.springboot.boot.service.MaterialService;
 import com.springboot.boot.utils.SimpleResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,9 @@ public class MaterialController {
 
     @Autowired
     private MaterialService materialService;
+
+    @Autowired
+    private InventoryService inventoryService;
 
     @RequestMapping(value = "/selectMaterialPrice",method = RequestMethod.POST)
     @ResponseBody
@@ -80,11 +85,20 @@ public class MaterialController {
     @ResponseBody
     public SimpleResult updateMaterial(@RequestParam(name = "materialId")Integer materialId,
                                        @RequestParam(name = "isFailer",defaultValue = "")String isFailer,
-                                       @RequestParam(name = "status")Integer status){
+                                       @RequestParam(name = "status",defaultValue = "0")Integer status,HttpSession session){
         SimpleResult result = new SimpleResult();
         Material material = new Material();
         material.setId(materialId);
         material.setIsFailer(isFailer);
+        User user =(User)session.getAttribute("user");
+        String rolerName = user.getRolerName();
+        if("材料主管".equals(rolerName)){
+            status=1;
+        }else if("经理".equals(rolerName)){
+            status=2;
+            List<Material> list = materialService.selectMaterialById(materialId);
+            inventoryService.addInventory(list.get(0));
+        }
         material.setStatus(status);
         int flag = materialService.updateMaterial(material);
         if(flag<1){
@@ -114,5 +128,15 @@ public class MaterialController {
             result.setCode(1);
         }
         return result;
+    }
+
+    @RequestMapping(value = "/selectMaterialByResult",method = RequestMethod.GET)
+    @ResponseBody
+    public PageInfo<Material> selectMaterialByResult(@RequestParam(name="status",defaultValue = "0")Integer status,
+                                               @RequestParam(name="page",defaultValue = "1")Integer page){
+        PageHelper.startPage(page,10);
+        List<Material> list = materialService.selectMaterialForStatus();
+        PageInfo<Material> info = new PageInfo<>(list,4);
+        return info;
     }
 }

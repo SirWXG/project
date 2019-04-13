@@ -20,4 +20,8 @@ public interface MaterialService {
     int updateMaterial(Material material);
 
     int updateMaterialNum(Material material);
+
+    List<Material> selectMaterialForStatus();
+
+    List<Material> selectMaterialById(int id);
 }

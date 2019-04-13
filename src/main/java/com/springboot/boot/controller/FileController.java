@@ -1,6 +1,8 @@
 package com.springboot.boot.controller;
 
+import com.springboot.boot.pojo.Inventory;
 import com.springboot.boot.pojo.Material;
+import com.springboot.boot.service.InventoryService;
 import com.springboot.boot.service.MaterialService;
 import com.springboot.boot.utils.SimpleResult;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -29,6 +31,9 @@ public class FileController {
 
     @Autowired
     private MaterialService materialService;
+
+    @Autowired
+    private InventoryService inventoryService;
 
     @RequestMapping(value = "/uploadFile",method = RequestMethod.POST,produces="application/json")
     @ResponseBody
@@ -100,6 +105,45 @@ public class FileController {
         getPath(wb,xlsName);
         return "";
     }
+
+    @RequestMapping(value = "/forExcel")
+    @ResponseBody
+    public String getFile(@RequestParam(name = "xlsName")String xlsName) throws IOException, InterruptedException {
+        List<Inventory> list = inventoryService.selectInventory(1);
+        Workbook wb = new HSSFWorkbook();
+        Sheet sheet = wb.createSheet("page1");
+        int k=0;
+        Row row = sheet.createRow((short)k);
+        row.createCell(0).setCellValue("编号");
+        row.createCell(1).setCellValue("材料名称");
+        row.createCell(2).setCellValue("单位");
+        row.createCell(3).setCellValue("规格");
+        row.createCell(4).setCellValue("进库数量");
+        row.createCell(5).setCellValue("单价");
+        row.createCell(6).setCellValue("合计");
+        row.createCell(7).setCellValue("验收人");
+        row.createCell(8).setCellValue("验收情况");
+        row.createCell(9).setCellValue("供应商");
+        row.createCell(10).setCellValue("备注");
+        for(Inventory inventory:list){
+            k++;
+            row = sheet.createRow((short)k);
+            row.createCell(0).setCellValue(inventory.getId());
+            row.createCell(1).setCellValue(inventory.getMaterialName());
+            row.createCell(2).setCellValue(inventory.getMaterialUnit());
+            row.createCell(3).setCellValue(inventory.getMaterialSpec());
+            row.createCell(4).setCellValue(inventory.getMaterialNum());
+            row.createCell(5).setCellValue(inventory.getMaterialPrice());
+            row.createCell(6).setCellValue(inventory.getTotalPrice());
+            row.createCell(7).setCellValue(inventory.getAcceptMan());
+            row.createCell(8).setCellValue("合格");
+            row.createCell(9).setCellValue(inventory.getMaterialSupplier());
+            row.createCell(10).setCellValue(inventory.getNote());
+        }
+        getPath(wb,xlsName);
+        return "";
+    }
+
 
     public static void getPath(Workbook wb,String xlsName) throws IOException, InterruptedException {
         String path = "E:\\xls";

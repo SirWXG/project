@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springboot.boot.mapper.InventoryMapper">
+    <resultMap id="BaseResultMap" type="com.springboot.boot.pojo.Inventory">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="material_name" jdbcType="VARCHAR" property="materialName" />
+        <result column="material_unit" jdbcType="VARCHAR" property="materialUnit" />
+        <result column="material_spec" jdbcType="VARCHAR" property="materialSpec" />
+        <result column="material_num" jdbcType="INTEGER" property="materialNum" />
+        <result column="material_price" jdbcType="DECIMAL" property="materialPrice" />
+        <result column="total_price" jdbcType="DECIMAL" property="totalPrice" />
+        <result column="accept_man" jdbcType="VARCHAR" property="acceptMan" />
+        <result column="status" jdbcType="INTEGER" property="status" />
+        <result column="material_supplier" jdbcType="VARCHAR" property="materialSupplier" />
+        <result column="note" jdbcType="VARCHAR" property="note" />
+        <result column="accept_time" jdbcType="TIMESTAMP" property="acceptTime" />
+        <result column="material_var" jdbcType="VARCHAR" property="materialVar" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        id,material_name,material_unit,material_spec,material_num,material_price,total_price,accept_man,status,material_supplier,note,accept_time,material_var
+    </sql>
+
+    <insert id="addInventory" parameterType="com.springboot.boot.pojo.Inventory">
+        INSERT INTO inventory(material_name,material_unit,material_spec,material_num,material_price,total_price,accept_man,status,material_supplier,note,accept_time)
+        values (#{materialName},#{materialUnit},#{materialSpec},#{materialNum},#{materialPrice},#{totalPrice},#{acceptMan},#{status},#{materialSupplier},#{note},#{acceptTime})
+    </insert>
+
+    <select id="checkInventory" parameterType="com.springboot.boot.pojo.Inventory" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List" />
+        FROM inventory where material_name=#{materialName} and material_unit=#{materialUnit} and material_spec=#{materialSpec} and material_price=#{materialPrice} and material_var=#{materialVar}
+    </select>
+
+    <update id="updateInventoryNum" parameterType="com.springboot.boot.pojo.Inventory">
+        UPDATE inventory set material_num=material_num+#{materialNum} where
+        material_name=#{materialName} and material_unit=#{materialUnit} and material_spec=#{materialSpec} and material_price=#{materialPrice} and material_var=#{materialVar}
+    </update>
+
+    <select id="selectInventory" resultMap="BaseResultMap" parameterType="int">
+        SELECT <include refid="Base_Column_List" />
+        FROM inventory where status=#{status}
+    </select>
+
+    <update id="updateStatus" parameterType="com.springboot.boot.pojo.Inventory">
+        UPDATE inventory
+        <set>
+            status=#{status}
+            <if test="acceptMan!=null and acceptMan.trim()!=''">
+                ,accept_man=#{acceptMan}
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+
+</mapper>

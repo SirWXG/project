@@ -10,8 +10,8 @@
 <body>
 <table class="layui-hide" id="test" lay-filter="test"></table>
 <script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-xs" lay-event="del">通过</a>
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="edit">不通过</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">不合格</a>
+    <a class="layui-btn  layui-btn-xs" lay-event="edit">验收合格</a>
 </script>
 
 <script th:inline="none">
@@ -19,40 +19,21 @@
         var table = layui.table;
         table.render({
             elem: '#test'
-            ,url:'/material/selectMaterialByStatus'
+            ,url:'/inventory/selectInventoryByStatus'
             ,toolbar: '#toolbarDemo'
             ,cols: [[
                 {field:'id', title:'编号', width:'10%', fixed: 'left', unresize: true, sort: true}
                 ,{field:'materialName', title:'材料名称', width:'10%'}
-                ,{field:'buyPrice', title:'购买价格', width:'10%', sort: true}
-                ,{field:'materialNum', title:'数量(可修改)', width:'10%',edit: 'text'}
-                ,{field:'materialSupplier', title:'供应商',width:'10%'}
-                ,{field:'materialVar', title:'材料类型', width:'10%', sort: true}
-                ,{field:'createTime', title:'申请时间', width:'10%'}
-                ,{field:'proposer', title:'申请人', width:'10%', sort: true}
-                ,{field:'projectName', title:'所属项目', width:'10%'}
+                ,{field:'materialUnit', title:'单位', width:'10%', sort: true}
+                ,{field:'materialSpec', title:'规格', width:'10%'}
+                ,{field:'materialNum', title:'数量',width:'10%'}
+                ,{field:'materialPrice', title:'单价', width:'10%', sort: true}
+                ,{field:'totalPrice', title:'合计', width:'10%'}
+                ,{field:'materialSupplier', title:'供应商', width:'10%'}
+                ,{field:'note', title:'备注', width:'10%'}
                 ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:'10%'}
             ]]
             ,page: true
-        });
-
-        //监听单元格编辑
-        table.on('edit(test)', function(obj){
-            var value = obj.value //得到修改后的值
-                ,data = obj.data //得到所在行所有键值
-            $.ajax({
-                url:"/material/updateMaterialNum",
-                type:"post",
-                data:{
-                    id:data.id,
-                    materialNum:value
-                },
-                success:function (datas) {
-                    if(datas.code==1){
-                        layer.msg('[项目: '+ data.projectName +']  的数量更改为：'+ value);
-                    }
-                }
-            });
         });
 
         //监听行工具事件
@@ -61,14 +42,16 @@
             //console.log(obj)
             if(obj.event === 'del'){
                 $.ajax({
-                    url:"/material/updateMaterial",
+                    url:"/inventory/updateInventory",
                     type:"post",
                     data:{
-                        materialId:obj.data.id
+                        id:obj.data.id,
+                        status:2
                     },
                     success:function (data) {
                         if(data.code==1){
                             layer.alert("审批成功",2000);
+                            layer.close(index);
                             obj.del();
                         }else{
                             layer.alert("审批失败,");
@@ -84,12 +67,12 @@
                         email: value
                     });
                     $.ajax({
-                        url:"/material/updateMaterial",
+                        url:"/inventory/updateInventory",
                         type:"post",
                         data:{
-                            materialId:obj.data.id,
-                            isFailer:value,
-                            status:3
+                            id:obj.data.id,
+                            acceptMan:value,
+                            status:1
                         },
                         success:function (data) {
                             if(data.code==1){

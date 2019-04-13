@@ -32,10 +32,11 @@
     <div class="layui-row">
         <form class="layui-form layui-col-md12 x-so">
             <div class="layui-input-inline">
-                <select name="projectVar">
-                    <option value="">请选择材料类型</option>
-                    <option value="临时材料">临时材料</option>
-                    <option value="工程材料">工程材料</option>
+                <select name="status">
+                    <option value="">请选择审批状态</option>
+                    <option value="0">未通过</option>
+                    <option value="3">已通过</option>
+                    <option value="">正在审核</option>
                 </select>
             </div>
             <button class="layui-btn" id="query"  lay-submit="" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>
@@ -53,10 +54,11 @@
             <th>材料单位</th>
             <th>材料数量</th>
             <th>材料购买价</th>
-            <th>合计</th>
             <th>材料类型</th>
             <th>供应商</th>
             <th>备注</th>
+            <th>申请状态</th>
+            <th>原因</th>
         </tr>
         </thead>
         <tbody id="tbodys">
@@ -77,15 +79,16 @@
 
     function getAjax(data) {
         $.ajax({
-            url:"/material/selectMaterialByProject",
+            url:"/material/selectMaterialByResult",
             type:"get",
             data:{
                 page:data,
-                projectVar:$("select[name='projectVar']").val()
+                status:$("select[name='status']").val()
             },
             success:function (data) {
                 eachData(data,data.list);
                 eachPage(data);
+                $(".x-right").html("共有数据："+data.total+"条");
             }
         });
         return false;
@@ -94,7 +97,6 @@
     function eachPage(data) {
         $("#divPage").empty();
         $(".page").empty();
-
         var $prev = $("<a>").addClass("prev").attr("href","javascript:getAjax("+(data.isFirstPage?1:data.prePage)+")").html("&lt;&lt;");
         var $next = $("<a>").addClass("next").attr("href","javascript:getAjax("+(data.isLastPage?data.pages:data.nextPage)+")").html("&gt;&gt;");
         var $divc = $("<div>").append($prev);
@@ -113,33 +115,24 @@
 
     function eachData(data,result) {
         $("#tbodys").empty();
-        var time_price = 0.00;
-        var project_price=0.00;
         $.each(result,function (index,items) {
             <!-- 遍历数据 -->
-            var $materialId = $("<td>").attr("style","width:10%").html(items.id);
+            var $materialId = $("<td>").attr("style","width:3%").html(items.id);
             var $materialName = $("<td>").attr("style","width:10%").html(items.materialName);
             var $buyPrice = $("<td>").attr("style","width:10%").html(items.buyPrice);
-            var $materialNum = $("<td>").attr("style","width:10%").html(items.materialNum);
-            var $materialUnit = $("<td>").attr("style","width:10%").html(items.materialUnit);
+            var $materialNum = $("<td>").attr("style","width:7%").html(items.materialNum);
+            var $materialUnit = $("<td>").attr("style","width:6%").html(items.materialUnit);
             var $materialType = $("<td>").attr("style","width:10%").html(items.materialType);
-            var $materialVar = $("<td>").attr("style","width:10%").html(items.materialVar);
+            var $materialVar = $("<td>").attr("style","width:9%").html(items.materialVar);
             var $materialSupplier = $("<td>").attr("style","width:10%").html(items.materialSupplier);
             var $note = $("<td>").attr("style","width:10%").html(items.note);
-            var $add = $("<td>").attr("style","width:10%").html(items.materialNum*items.buyPrice);
-            if(items.materialVar=='临时材料'){
-                time_price=time_price+items.materialNum*items.buyPrice;
-            }else{
-                project_price=project_price+items.materialNum*items.buyPrice;
-            }
+            var $status = $("<td>").attr("style","width:10%").html(items.status==0||items.status==1?"<span style='color: #b2dba1'>正在审批</span>":items.status==3?"<span style='color: red'>申请失败</span>":"<span style='color: green'>申请成功</span>");
+            var $is_failer = $("<td>").attr("style","width:15%").html(items.isFailer);
             var $tr = $("<tr>").append($materialId).append($materialName)
-                .append($materialType).append($materialUnit).append($materialNum).append($buyPrice).append($add)
-                .append($materialVar).append($materialSupplier).append($note);
+                .append($materialType).append($materialUnit).append($materialNum).append($buyPrice)
+                .append($materialVar).append($materialSupplier).append($note).append($status).append($is_failer);
             $("#tbodys").append($tr);
         })
-        $(".x-right").empty();
-        var html = "当前共有:"+data.total+"条数据"+",临时材料总价为:"+time_price+",工程材料总价为:"+project_price;
-        $(".x-right").html(html);
     }
     layui.use(['form'], function(){
         form = layui.form;

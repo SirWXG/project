@@ -23,4 +23,8 @@ public interface MaterialMapper {
     int updateMaterial(Material material);
 
     int updateMaterialNum(Material material);
+
+    List<Material> selectMaterialForStatus(@Param("proposer")String proposer);
+
+    List<Material> selectMaterialById(@Param("id")int id);
 }

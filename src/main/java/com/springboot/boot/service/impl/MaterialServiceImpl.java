@@ -42,7 +42,7 @@ public class MaterialServiceImpl implements MaterialService {
         material.setCreateTime(new Date());
         material.setProposerNo(user.getId());
         material.setProposer(user.getUserName());
-        material.setStatus(1);
+        material.setStatus(0);
         long price = material.getBuyPrice()*material.getMaterialNum();
         material.setMaterialTotalPrice(price);
         return materialMapper.addMaterial(material);
@@ -54,9 +54,9 @@ public class MaterialServiceImpl implements MaterialService {
         User user = (User)session.getAttribute("user");
         Integer status = 0;
         if("经理".equals(user.getRolerName())){
-            status=2;
-        }else if("材料主管".equals(user.getRolerName())){
             status=1;
+        }else if("材料主管".equals(user.getRolerName())){
+            status=0;
         }
         return materialMapper.selectMaterialByStatus(status);
     }
@@ -74,5 +74,17 @@ public class MaterialServiceImpl implements MaterialService {
     @Override
     public int updateMaterialNum(Material material) {
         return materialMapper.updateMaterialNum(material);
+    }
+
+    @Override
+    public List<Material> selectMaterialForStatus() {
+        HttpSession session=((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getSession();
+        User user = (User)session.getAttribute("user");
+        return materialMapper.selectMaterialForStatus(user.getUserName());
+    }
+
+    @Override
+    public List<Material> selectMaterialById(int id) {
+        return materialMapper.selectMaterialById(id);
     }
 }
